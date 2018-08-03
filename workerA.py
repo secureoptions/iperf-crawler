@@ -1,5 +1,5 @@
 import boto3
-from vars import STATE_MACHINE_ARN, REGION, A_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, SUBNETS, MTR_FLAGS
+from vars import STATE_MACHINE_ARN, REGION, A_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, SUBNETS, MTR_FLAGS, GROUP
 from ec2_metadata import ec2_metadata
 from subprocess import Popen, PIPE, STDOUT
 import json
@@ -73,14 +73,14 @@ def update_results(message,command,text):
 		try:
 			SEQ_TOKEN = logs.describe_log_streams(
 				logGroupName='Iperf-Crawler',
-				logStreamNamePrefix='%s <--> %s' % (SUBNETS[0],SUBNETS[1])
+				logStreamNamePrefix='%s:%s <--> %s' % (GROUP,SUBNETS[0],SUBNETS[1])
 			)
 			
 		
 			SEQ_TOKEN = SEQ_TOKEN['logStreams'][0]['uploadSequenceToken']
 			logs.put_log_events(
 				logGroupName='Iperf-Crawler',
-				logStreamName='%s <--> %s' % (SUBNETS[0],SUBNETS[1]),
+				logStreamName='%s:%s <--> %s' % (GROUP,SUBNETS[0],SUBNETS[1]),
 				logEvents=[
 					{
 						'timestamp': int(unix_time_millis(datetime.datetime.now())),
@@ -92,7 +92,7 @@ def update_results(message,command,text):
 		except:
 			logs.put_log_events(
 				logGroupName='Iperf-Crawler',
-				logStreamName='%s <--> %s' % (SUBNETS[0],SUBNETS[1]),
+				logStreamName='%s:%s <--> %s' % (GROUP,SUBNETS[0],SUBNETS[1]),
 				logEvents=[
 					{
 						'timestamp': int(unix_time_millis(datetime.datetime.now())),
