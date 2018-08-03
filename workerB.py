@@ -1,5 +1,5 @@
 import boto3
-from vars import B_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, MTR_FLAGS, SUBNETS, REGION
+from vars import B_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, MTR_FLAGS, SUBNETS, REGION, GROUP
 import json
 from subprocess import Popen, PIPE, STDOUT
 import botocore
@@ -15,38 +15,12 @@ sdb = boto3.client('sdb', region_name = REGION)
 SUBNETS = SUBNETS.split(',')
 
 
-# set workerB's ReadyCheck attribute to True so workerA knows workerB is ready to begin stepfunctions
-sdb.put_attributes(
-    DomainName='iperf-crawler',
-    ItemName=SUBNETS[1],
-    Attributes=[
-        {
-            'Name': 'ReadyCheck',
-            'Value': 'True',
-			'Replace':True
-        }
-    ]
-)
-
-# now wait and check SimpleDB every 5 seconds for workerA to signal its ready as well
-while True:
-	response = sdb.get_attributes(
-					DomainName='iperf-crawler',
-					ItemName=SUBNETS[0],
-					AttributeNames=['ReadyCheck'],
-					)
-	if response['Attributes'][0]['Value'] == 'True':
-		# workerA is ready! Let's go
-		break
-	else:
-		time.sleep(5)
-
 
 # create a new log stream to log results of iperf3 tests between side A and side BaseException
 try:
 	logs.create_log_stream(
     		logGroupName='Iperf-Crawler',
-    		logStreamName='%s <--> %s' % (SUBNETS[0],SUBNETS[1])
+    		logStreamName=GROUP
 	)
 except botocore.exceptions.ClientError as e:
 	if e.response['Error']['Code'] == 'ResourceAlreadyExistsException':
@@ -86,14 +60,14 @@ def update_results(message,command,text):
 		try:
 			SEQ_TOKEN = logs.describe_log_streams(
 				logGroupName='Iperf-Crawler',
-				logStreamNamePrefix='%s <--> %s' % (SUBNETS[0],SUBNETS[1])
+				logStreamNamePrefix=GROUP
 			)
 			
 		
 			SEQ_TOKEN = SEQ_TOKEN['logStreams'][0]['uploadSequenceToken']
 			logs.put_log_events(
 				logGroupName='Iperf-Crawler',
-				logStreamName='%s <--> %s' % (SUBNETS[0],SUBNETS[1]),
+				logStreamName=GROUP,
 				logEvents=[
 					{
 						'timestamp': int(unix_time_millis(datetime.datetime.now())),
@@ -105,7 +79,7 @@ def update_results(message,command,text):
 		except:
 			logs.put_log_events(
 				logGroupName='Iperf-Crawler',
-				logStreamName='%s <--> %s' % (SUBNETS[0],SUBNETS[1]),
+				logStreamName=GROUP,
 				logEvents=[
 					{
 						'timestamp': int(unix_time_millis(datetime.datetime.now())),
