@@ -150,7 +150,7 @@ else:
 	
 # Run the iperf3 client with the user-defined flags (specified in Cloudformation)
 try: 
-	CMD = 'iperf3 -c %s %s' % (IPERF_FLAGS, TARGET_IP)	
+	CMD = '%s %s' % (IPERF_FLAGS, TARGET_IP)	
 	p = Popen(CMD, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True).stdout.read()
 	update_results(p,CMD,'IPERF')
 	
@@ -175,7 +175,7 @@ response = get_activity_task('Side B running MTR')
 TASK_TOKEN = response['taskToken']
 try:
 	Popen(["killall","iperf3"])
-	CMD = 'mtr %s %s' % (MTR_FLAGS, TARGET_IP)
+	CMD = '%s %s' % (MTR_FLAGS, TARGET_IP)
 	p = Popen(CMD, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True).stdout.read()
 	update_results(p,CMD,'MTR')
 	
