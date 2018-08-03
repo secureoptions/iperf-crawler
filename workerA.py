@@ -136,7 +136,7 @@ TARGET_IP = response['TargetIp']
 
 try: 	
 	Popen(['killall','iperf3'])
-	CMD = 'iperf3 -c %s %s' % (IPERF_FLAGS, TARGET_IP)	
+	CMD = '%s %s' % (IPERF_FLAGS, TARGET_IP)	
 	p = Popen(CMD, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True).stdout.read()
 	update_results(p,CMD,'IPERF')
 	
@@ -156,7 +156,7 @@ except Exception as e:
 response = get_activity_task('Side A running MTR')
 TASK_TOKEN = response['taskToken']
 try:
-	CMD = 'mtr %s %s' % (MTR_FLAGS, TARGET_IP)
+	CMD = '%s %s' % (MTR_FLAGS, TARGET_IP)
 	p = Popen(CMD, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True).stdout.read()
 	update_results(p,CMD,'MTR')
 	
