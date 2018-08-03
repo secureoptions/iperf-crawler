@@ -18,7 +18,6 @@ while True:
 					DomainName='iperf-crawler',
 					ItemName=SUBNETS[1],
 					AttributeNames=['ReadyCheck'],
-					ConsistentRead=True
 					)
 	if response['Attributes'][0]['Value'] == 'True':
 		# workerB is ready!
@@ -29,60 +28,75 @@ while True:
 		
 		
 # set workerA's ReadyCheck attribute to True so workerB knows workerA is ready to begin stepfunctions
-response = client.put_attributes(
+sdb.put_attributes(
     DomainName='iperf-crawler',
     ItemName=SUBNETS[0],
     Attributes=[
         {
             'Name': 'ReadyCheck',
-            'Value': 'True'
+            'Value': 'True',
+			'Replace':True
         }
     ]
 )
 
 		
 # function to put test results and messages in Cloudwatch
-def update_results(message,command):
+def update_results(message,command,text):
 		epoch = datetime.datetime.utcfromtimestamp(0)
 		
 		def unix_time_millis(dt):
 			return (dt - epoch).total_seconds() * 1000.0
 			
-			
-		result_to_send= ('######################### IPERF CLIENT RAN FROM %s #########################\n' % SUBNETS[0],
-						'# Traffic Direction: %s ---> %s\n' % (SUBNETS[0],SUBNETS[1]),
-						'# Command Executed: %s\n' % command,
-						'############################################################################\n',
-						'\n', message)
+		WORKER_A_AZ = sdb.get_attributes(
+			DomainName='iperf-crawler',
+			ItemName=SUBNETS[0],
+			AttributeNames=['AvailabilityZone']
+				)
+
 		
+		WORKER_B_AZ = sdb.get_attributes(
+				DomainName='iperf-crawler',
+				ItemName=SUBNETS[1],
+				AttributeNames=['AvailabilityZone']
+					)
+					
+		
+		result_to_send= ('######## %s CLIENT RESULTS FROM %s | %s #####\n'
+						'# Traffic Direction: %s ---> %s\n' 
+						'# Availability Zones: %s ---> %s\n'
+						'# Command Executed: %s\n'
+						'############################################################################\n'
+						'\n'
+						'%s') % (text, WORKER_A_AZ['Attributes'][0]['Value'], SUBNETS[0], SUBNETS[0], SUBNETS[1], WORKER_A_AZ['Attributes'][0]['Value'], WORKER_B_AZ['Attributes'][0]['Value'], command, message)
 			
 		try:
 			SEQ_TOKEN = logs.describe_log_streams(
-				logGroupName='Iperf3-Crawler',
-				logStreamNamePrefix='%s<-->%s' % (SUBNETS[0],SUBNETS[1])
+				logGroupName='Iperf-Crawler',
+				logStreamNamePrefix='%s <--> %s' % (SUBNETS[0],SUBNETS[1])
 			)
 			
 		
 			SEQ_TOKEN = SEQ_TOKEN['logStreams'][0]['uploadSequenceToken']
 			logs.put_log_events(
-				logGroupName='Iperf3-Crawler',
-				logStreamName='%s<-->%s' % (SUBNETS[0],SUBNETS[1]),
+				logGroupName='Iperf-Crawler',
+				logStreamName='%s <--> %s' % (SUBNETS[0],SUBNETS[1]),
 				logEvents=[
 					{
 						'timestamp': int(unix_time_millis(datetime.datetime.now())),
-						'message': message
+						'message': result_to_send
 					},
 				],
 				sequenceToken=SEQ_TOKEN
 			)
 		except:
 			logs.put_log_events(
-				logGroupName='Iperf3-Crawler',
-				logStreamName='%s<-->%s' % (SUBNETS[0],SUBNETS[1]),
+				logGroupName='Iperf-Crawler',
+				logStreamName='%s <--> %s' % (SUBNETS[0],SUBNETS[1]),
 				logEvents=[
 					{
 						'timestamp': int(unix_time_millis(datetime.datetime.now())),
-						'message': message
+						'message': result_to_send
 					},
 				],
 			)
@@ -152,7 +166,7 @@ try:
 	Popen(['killall','iperf3'])
 	CMD = 'iperf3 -c %s %s' % (IPERF_FLAGS, TARGET_IP)	
 	p = Popen(CMD, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True).stdout.read()
-	update_results(p,CMD)
+	update_results(p,CMD,'IPERF')
 	
 	# finally update the state machine so that side A can run as client
 	stepfunctions.send_task_success(
@@ -172,11 +186,23 @@ TASK_TOKEN = response['taskToken']
 try:
 	CMD = 'mtr %s %s' % (MTR_FLAGS, TARGET_IP)
 	p = Popen(CMD, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True).stdout.read()
-	update_results(p,CMD)
+	update_results(p,CMD,'MTR')
 	
 	stepfunctions.send_task_success(
 		taskToken=TASK_TOKEN,
 		output="{}"
+		)
+		
+	sdb.put_attributes(
+		DomainName='iperf-crawler',
+		ItemName=SUBNETS[0],
+		Attributes=[
+			{
+				'Name': 'FinishStatus',
+				'Value': 'Completed',
+				'Replace': True
+			}
+		]
 		)
 except Exception as e:
 		stepfunctions.send_task_failure(
@@ -184,4 +210,14 @@ except Exception as e:
 			error=e,
 			cause='Side A was unable to run MTR'
 			)
-	
+		sdb.put_attributes(
+			DomainName='iperf-crawler',
+			ItemName=SUBNETS[1],
+			Attributes=[
+				{
+					'Name': 'FinishStatus',
+					'Value': 'Completed',
+					'Replace': True
+				}
+			]
+			)
