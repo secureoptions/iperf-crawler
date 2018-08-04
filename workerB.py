@@ -89,17 +89,17 @@ def update_results(message,command,text):
 			)
 
 
-def get_activity_task(name):
+def get_activity_task():
 	response = stepfunctions.get_activity_task(
-		activityArn=B_ACTIVITY_ARN,
-		workerName=name
+		activityArn=B_ACTIVITY_ARN
+
 	)
 
 	return response
 
 		
 # Wait for ec2 metadata from side 'A', and then create security group entry accordingly below. 
-response = get_activity_task('Side B get Side A\'s EC2 Metadata')
+response = get_activity_task()
 TASK_TOKEN = response['taskToken']
 
 # Convert the returned input 'string' to json format
@@ -133,7 +133,7 @@ except Exception as e:
 	
 
 # Now wait for next step
-response = get_activity_task('Side B notified that server A is ready for iperf3 test. Executing')
+response = get_activity_task()
 TASK_TOKEN = response['taskToken']
 
 # Side A's SG should be open to us now. Let's try to see if A's private IP is reachable. If it is not then use its public IP instead for iperf3 test
@@ -171,7 +171,7 @@ except Exception as e:
 
 
 # Finally run an MTR report to the target ip. This does not require sync between the EC2s
-response = get_activity_task('Side B running MTR')
+response = get_activity_task()
 TASK_TOKEN = response['taskToken']
 try:
 	Popen(["killall","iperf3"])
