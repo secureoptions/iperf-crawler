@@ -74,17 +74,16 @@ def update_results(message,command,text):
 			)
 
 
-def get_activity_task(name):
+def get_activity_task():
 	response = stepfunctions.get_activity_task(
-		activityArn=A_ACTIVITY_ARN,
-		workerName=name
+		activityArn=A_ACTIVITY_ARN
 	)
 
 	return response
 
 
 # This machine is identified as side 'A'. It will be responsible for initiating state execution, and providing its metadata as initial input to the state
-response = stepfunctions.start_execution(
+stepfunctions.start_execution(
 	stateMachineArn=STATE_MACHINE_ARN,
 	# Here we need to update state with local metadata. This will be used by side 'B' to perform its tasks
 	input="{\"SideAPrivateIp\" : \"%s\", \"SideAPublicIp\" : \"%s\"}" % (ec2_metadata.private_ipv4, ec2_metadata.public_ipv4)
@@ -92,7 +91,7 @@ response = stepfunctions.start_execution(
 
 
 # Retrieve Side B's metadata from the state machine input, and use it to create security group rules
-response = get_activity_task('Side A get Side B\'s EC2 Metadata')
+response = get_activity_task()
 TASK_TOKEN = response['taskToken']
 
 # Convert the returned input 'string' to json format
@@ -127,7 +126,7 @@ stepfunctions.send_task_success(
 )
 
 # B side client has finished running iperf3. Run iperf3 client from side A now
-response = get_activity_task('Side B has finished iperf3 client, run client on Side A')
+response = get_activity_task()
 TASK_TOKEN = response['taskToken']
 
 # Convert the returned input 'string' to json format
@@ -153,11 +152,11 @@ except Exception as e:
 			)
 
 # Finally run an MTR report to the target ip. This does not require sync between the EC2s
-response = get_activity_task('Side A running MTR')
+response = get_activity_task()
 TASK_TOKEN = response['taskToken']
 try:
 	CMD = '%s %s' % (MTR_FLAGS, TARGET_IP)
-	p = Popen(CMD, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True).stdout.read()
+	
 	update_results(p,CMD,'MTR')
 	
 	stepfunctions.send_task_success(
