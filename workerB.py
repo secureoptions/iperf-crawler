@@ -1,7 +1,8 @@
 import boto3
 from vars import B_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, MTR_FLAGS, SUBNETS, REGION, EC2_REGION, GROUP
 import json
-from subprocess import Popen, call, PIPE, STDOUT
+from subprocess import Popen, PIPE, STDOUT
+import urllib2
 import botocore
 import datetime
 import time
@@ -12,8 +13,8 @@ stepfunctions = boto3.client('stepfunctions', region_name = REGION)
 logs = boto3.client('logs', region_name = REGION)
 sdb = boto3.client('sdb', region_name = REGION)
 
-LOCAL_PUBLIC_IP = call(['curl','http://169.254.169.254/latest/meta-data/public-ipv4'])
-LOCAL_PRIVATE_IP = call(['curl','http://169.254.169.254/latest/meta-data/private_ipv4'])
+LOCAL_PUBLIC_IP = urllib2.urlopen('http://169.254.169.254/latest/meta-data/public-ipv4').read()
+LOCAL_PRIVATE_IP = urllib2.urlopen('http://169.254.169.254/latest/meta-data/local-ipv4').read()
 SUBNETS = SUBNETS.split(',')
 
 
