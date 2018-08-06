@@ -1,15 +1,17 @@
 import boto3
-from vars import STATE_MACHINE_ARN, REGION, A_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, SUBNETS, MTR_FLAGS, GROUP
-from ec2_metadata import ec2_metadata
-from subprocess import Popen, PIPE, STDOUT
+from vars import STATE_MACHINE_ARN, REGION, EC2_REGION, A_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, SUBNETS, MTR_FLAGS, GROUP
+from subprocess import Popen, call, PIPE, STDOUT
 import json
 import datetime
 import time
 
-ec2 = boto3.client('ec2', region_name = ec2_metadata.region)
+ec2 = boto3.client('ec2', region_name = EC2_REGION)
 stepfunctions = boto3.client('stepfunctions', region_name = REGION)
 logs = boto3.client('logs', region_name = REGION)
 sdb = boto3.client('sdb', region_name = REGION)
+
+LOCAL_PUBLIC_IP = call(['curl','http://169.254.169.254/latest/meta-data/public-ipv4'])
+LOCAL_PRIVATE_IP = call(['curl','http://169.254.169.254/latest/meta-data/private_ipv4'])
 SUBNETS = SUBNETS.split(',')
 
 		
@@ -86,7 +88,7 @@ def get_activity_task():
 stepfunctions.start_execution(
 	stateMachineArn=STATE_MACHINE_ARN,
 	# Here we need to update state with local metadata. This will be used by side 'B' to perform its tasks
-	input="{\"SideAPrivateIp\" : \"%s\", \"SideAPublicIp\" : \"%s\"}" % (ec2_metadata.private_ipv4, ec2_metadata.public_ipv4)
+	input="{\"SideAPrivateIp\" : \"%s\", \"SideAPublicIp\" : \"%s\"}" % (LOCAL_PRIVATE_IP, LOCAL_PUBLIC_IP)
 )
 
 
@@ -148,7 +150,7 @@ except Exception as e:
 		stepfunctions.send_task_failure(
 			taskToken=TASK_TOKEN,
 			error=e,
-			cause='It appears that there was an issue with running iperf3 client or server on %s, or the results were unable to be pushed to Cloudwatch.' % ec2_metadata.private_ipv4
+			cause='It appears that there was an issue with running iperf3 client or server on %s, or the results were unable to be pushed to Cloudwatch.' % LOCAL_PRIVATE_IP
 			)
 
 # Finally run an MTR report to the target ip. This does not require sync between the EC2s
