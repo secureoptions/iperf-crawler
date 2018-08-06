@@ -156,7 +156,7 @@ response = get_activity_task()
 TASK_TOKEN = response['taskToken']
 try:
 	CMD = '%s %s' % (MTR_FLAGS, TARGET_IP)
-	
+	p = Popen(CMD, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True).stdout.read()
 	update_results(p,CMD,'MTR')
 	
 	stepfunctions.send_task_success(
