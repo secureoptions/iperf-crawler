@@ -1,17 +1,19 @@
 import boto3
-from vars import B_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, MTR_FLAGS, SUBNETS, REGION, GROUP
+from vars import B_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, MTR_FLAGS, SUBNETS, REGION, EC2_REGION, GROUP
 import json
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import Popen, call, PIPE, STDOUT
 import botocore
-from ec2_metadata import ec2_metadata
 import datetime
 import time
 
 # set needed boto3 clients
-ec2 = boto3.client('ec2', region_name = ec2_metadata.region)
+ec2 = boto3.client('ec2', region_name = EC2_REGION)
 stepfunctions = boto3.client('stepfunctions', region_name = REGION)
 logs = boto3.client('logs', region_name = REGION)
 sdb = boto3.client('sdb', region_name = REGION)
+
+LOCAL_PUBLIC_IP = call(['curl','http://169.254.169.254/latest/meta-data/public-ipv4'])
+LOCAL_PRIVATE_IP = call(['curl','http://169.254.169.254/latest/meta-data/private_ipv4'])
 SUBNETS = SUBNETS.split(',')
 
 
@@ -120,7 +122,7 @@ try:
 	# Update the state machine with B's metadata
 	stepfunctions.send_task_success(
 		taskToken=TASK_TOKEN,
-		output="{\"SideBPrivateIp\" : \"%s\", \"SideBPublicIp\" : \"%s\"}" % (ec2_metadata.private_ipv4, ec2_metadata.public_ipv4)
+		output="{\"SideBPrivateIp\" : \"%s\", \"SideBPublicIp\" : \"%s\"}" % (LOCAL_PRIVATE_IP, LOCAL_PUBLIC_IP)
 	)
 
 except Exception as e:
@@ -142,10 +144,10 @@ p = Popen(["ping","-c","3","-W","2",SIDE_A_PRIVATE_IP])
 p.wait()
 if p.poll():
 	TARGET_IP = SIDE_A_PUBLIC_IP
-	LOCAL_IP = ec2_metadata.public_ipv4
+	LOCAL_IP = LOCAL_PUBLIC_IP
 else:
 	TARGET_IP = SIDE_A_PRIVATE_IP
-	LOCAL_IP = ec2_metadata.private_ipv4
+	LOCAL_IP = LOCAL_PRIVATE_IP
 
 	
 # Run the iperf3 client with the user-defined flags (specified in Cloudformation)
@@ -166,7 +168,7 @@ except Exception as e:
 		stepfunctions.send_task_failure(
 		taskToken=TASK_TOKEN,
 		error=e,
-		cause='It appears that there was an issue with running iperf3 client or server on %s, or the results were unable to be pushed to Cloudwatch.' % ec2_metadata.private_ipv4
+		cause='It appears that there was an issue with running iperf3 client or server on %s, or the results were unable to be pushed to Cloudwatch.' % LOCAL_PRIVATE_IP
 		)
 
 
