@@ -86,12 +86,25 @@ def get_activity_task():
 
 
 # This machine is identified as side 'A'. It will be responsible for initiating state execution, and providing its metadata as initial input to the state
-stepfunctions.start_execution(
+execution = stepfunctions.start_execution(
 	stateMachineArn=STATE_MACHINE_ARN,
 	# Here we need to update state with local metadata. This will be used by side 'B' to perform its tasks
 	input="{\"SideAPrivateIp\" : \"%s\", \"SideAPublicIp\" : \"%s\"}" % (LOCAL_PRIVATE_IP, LOCAL_PUBLIC_IP)
 )
 
+execution_arn = execution['executionArn']
+
+for subnet in SUBNETS:
+	sdb.put_attributes(
+		DomainName='iperf-crawler',
+		ItemName=subnet,
+		Attributes=[
+			{
+				'Name': 'ExecutionArn',
+				'Value': execution_arn
+			}
+		]
+		)
 
 # Retrieve Side B's metadata from the state machine input, and use it to create security group rules
 response = get_activity_task()
