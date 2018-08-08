@@ -114,11 +114,17 @@ SIDE_A_PUBLIC_IP = response['SideAPublicIp']
 
 # Create security group rules for both, side A's private and public IPs
 try:
-	ec2.authorize_security_group_ingress(CidrIp = SIDE_A_PRIVATE_IP + '/32', FromPort = 5201, GroupId = SG_ID, IpProtocol = 'tcp', ToPort = 5201) 
-	ec2.authorize_security_group_ingress(CidrIp = SIDE_A_PUBLIC_IP + '/32', FromPort = 5201, GroupId = SG_ID, IpProtocol = 'tcp', ToPort = 5201) 
+	ec2.authorize_security_group_ingress(
+		CidrIp = SIDE_A_PRIVATE_IP + '/32', 
+		GroupId = SG_ID, 
+		IpProtocol = '-1'
+		) 
+	ec2.authorize_security_group_ingress(
+		CidrIp = SIDE_A_PUBLIC_IP + '/32', 
+		GroupId = SG_ID, 
+		IpProtocol = '-1', 
+		) 
 
-	ec2.authorize_security_group_ingress(CidrIp = SIDE_A_PRIVATE_IP + '/32', FromPort =-1, GroupId = SG_ID, IpProtocol = 'icmp', ToPort = -1 )
-	ec2.authorize_security_group_ingress(CidrIp = SIDE_A_PUBLIC_IP + '/32', FromPort =-1, GroupId = SG_ID, IpProtocol = 'icmp', ToPort = -1 )
 	
 	# Update the state machine with B's metadata
 	stepfunctions.send_task_success(
