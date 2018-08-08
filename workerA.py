@@ -120,11 +120,16 @@ SIDE_B_PUBLIC_IP = response['SideBPublicIp']
 # Create security group rules for both, side A's private and public IPs
 
 try:
-	ec2.authorize_security_group_ingress(CidrIp = SIDE_B_PRIVATE_IP + '/32', FromPort = 5201, GroupId = SG_ID, IpProtocol = 'tcp', ToPort = 5201) 
-	ec2.authorize_security_group_ingress(CidrIp = SIDE_B_PRIVATE_IP + '/32', FromPort =-1, GroupId = SG_ID, IpProtocol = 'icmp', ToPort = -1 )
-
-	ec2.authorize_security_group_ingress(CidrIp = SIDE_B_PUBLIC_IP + '/32', FromPort = 5201, GroupId = SG_ID, IpProtocol = 'tcp', ToPort = 5201) 
-	ec2.authorize_security_group_ingress(CidrIp = SIDE_B_PUBLIC_IP + '/32', FromPort =-1, GroupId = SG_ID, IpProtocol = 'icmp', ToPort = -1 )
+	ec2.authorize_security_group_ingress(
+		CidrIp = SIDE_B_PRIVATE_IP + '/32', 
+		GroupId = SG_ID, 
+		IpProtocol = '-1'
+		) 
+	ec2.authorize_security_group_ingress(
+		CidrIp = SIDE_B_PRIVATE_IP + '/32', 
+		GroupId = SG_ID, 
+		IpProtocol = '-1'
+		)
 except Exception as e:
 	stepfunctions.send_task_failure(
 		taskToken=TASK_TOKEN,
