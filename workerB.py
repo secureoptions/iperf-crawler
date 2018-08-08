@@ -122,7 +122,7 @@ try:
 	ec2.authorize_security_group_ingress(
 		CidrIp = SIDE_A_PUBLIC_IP + '/32', 
 		GroupId = SG_ID, 
-		IpProtocol = '-1', 
+		IpProtocol = '-1'
 		) 
 
 	
