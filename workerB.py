@@ -120,9 +120,9 @@ try:
 		IpProtocol = '-1'
 		) 
 	ec2.authorize_security_group_ingress(
-		CidrIp = SIDE_A_PUBLIC_IP + '/32', 
+		CidrIp = SIDE_A_PRIVATE_IP + '/32', 
 		GroupId = SG_ID, 
-		IpProtocol = '-1'
+		IpProtocol = '-1',
 		) 
 
 	
