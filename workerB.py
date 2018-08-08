@@ -167,9 +167,9 @@ try:
 	count = 1
 	while count <= 99:
 		if count < 10:
-			Popen(["iperf3","-s","-p","510"+ str(count),"&"])
+			Popen(["iperf3","-s","-p","520"+ str(count),"&"])
 		else:
-			Popen(["iperf3","-s","-p","51"+ str(count),"&"])
+			Popen(["iperf3","-s","-p","52"+ str(count),"&"])
 		count += 1
 
     # finally update the state machine so that side A can run as client
