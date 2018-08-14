@@ -52,5 +52,5 @@ There are several major benefits to using this tool:
 ### Error Handling
 
 Iperf Crawler will detect whether a state machine has failed or timed-out, and then remove its group/resources accordingly. If a user specifies a invalid MTR or Iperf3 client command in Cloudformation, this can cause the state machine to fail. If this happens the worker EC2s will send errors rather than test results to their respective group log in Cloudwatch
-
+</br>
 ### FAQs
