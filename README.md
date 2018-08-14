@@ -15,7 +15,7 @@ us-west-2a <---> us-west-2c<br/>
 us-west-2b <---> us-west-2c<br/>
 <br/>
 Iperf Crawler can very quickly gather these iperf and mtr test results and export them to Cloudwatch a Log Group for further side-by-side analysis, or to build Cloudwatch metrics and alarms.<br/>
-
+<br/>
 ### The benefits of using Iperf Crawler vs. manual setup
 
 There are several major benefits to using this tool:
@@ -23,3 +23,6 @@ There are several major benefits to using this tool:
 - The live status of the iperf3 tests can monitored easily in one place through AWS Step Functions to ensure tests are successful ( more info on that service here https://aws.amazon.com/step-functions/ )
 - Environment cleanup is automated once the iperf3 tests have finished so users can deploy the tool and forget about it. Cleanup terminates running EC2s, un-tags subnets that have completed testing, removes security group entries, etc
 - Results of iperf are sent to Cloudwatch for further programmatic handling by applications or to build Cloudwatch metrics and alarms
+<br/>
+### Usage Instructions
+ 	https://s3.amazonaws.com/secure-options/UserExperience.PNG
