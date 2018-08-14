@@ -27,7 +27,7 @@ There are several major benefits to using this tool:
 
 ### Usage Instructions
 
-![alt text](https://s3.amazonaws.com/secure-options/UserExperience.PNG)
+![user experience](https://s3.amazonaws.com/secure-options/UserExperience.PNG)
 
 1. Launch Cloudformation stack <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/iperf_crawler.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
 2. Specify optional, client-side mtr and iperf3 flags in the Cloudformation parameters.
@@ -35,3 +35,7 @@ There are several major benefits to using this tool:
 4. Monitor the AWS State Machine execution of your groups to watch their progress through the iperf/mtr tests in the console.  Make sure that you are looking in the region that your Cloudformation was deployed in
 5. Once your iperf3/mtr tests have completed, you will find the results in the Cloudwatch Log Group named Iperf-Crawler. The results are identified by Log Streams labeled by group number
  	
+</br>
+### The resource deployment workflow diagram
+
+![workflow](https://s3.amazonaws.com/secure-options/IperfCrawler.PNG)
