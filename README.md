@@ -1,11 +1,9 @@
 # iperf-crawler
 
 ## Table of Contents
-+ [Sub-sub-heading](#Copyrights & Contributions)
+- [Copyrights & Contributions](#copy)
 
-
-
-<!-- toc -->
+<a name="copy"></a>
 ### Copyrights & Contributions
 This tool uses source code from the following contributors:<br/>
 iperf3 https://github.com/esnet/iperf<br/>
