@@ -9,8 +9,13 @@
 - [Known Limitations](#limits)
 - [Error Handling](#errors)
 - [FAQs](#faqs)
-  + [question one](#questionone)
-
+  + [Can I run tests between subnets in multiple groups simultaneously?](#questionone)
+  + [Is cross-account supported?](#questiontwo)
+  + [Can I tag subnets in multiple AWS regions?](#questionthree)
+  + [Are there any known limitations with the iperf3 or mtr client commands that I can run?](#questionfour)
+  + [Can I run both TCP and UDP iperf3 tests?](#questionfive)
+  + [Can I run parallel streams?](#questionsix)
+  + [Can I run multiple iperf3 client processes in a for loop?](#questionseven)
 <br/>
 <a name="copy"></a>
 
