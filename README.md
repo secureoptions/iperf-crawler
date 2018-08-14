@@ -29,9 +29,9 @@ There are several major benefits to using this tool:
 
 ![alt text](https://s3.amazonaws.com/secure-options/UserExperience.PNG)
 
-1. Launch Cloudformation stack from here https://github.com/secureoptions/iperf-crawler
-Specify optional, client-side mtr and iperf3 flags in the Cloudformation parameters.
-Tag any two subnets to a group with a Key of iperf and value of groupN where N is a number. Key and Value are lowercase-sensitive. If any characters are uppercase, the tagged subnet will be ignored
-(optional) monitor the AWS State Machine execution of your groups to watch their progress through the iperf/mtr tests in the console.  Make sure that you are looking in the region that your Cloudformation was deployed in
-Once your iperf3/mtr tests have completed, you will find the results in the Cloudwatch Log Group named Iperf-Crawler. The results are identified by Log Streams labeled by group number
+1. Launch Cloudformation stack from here <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/iperf_crawler.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
+2. Specify optional, client-side mtr and iperf3 flags in the Cloudformation parameters.
+3. Tag any two subnets to a group with a Key of iperf and value of groupN where N is a number. Key and Value are lowercase-sensitive. If any characters are uppercase, the tagged subnet will be ignored
+4. Monitor the AWS State Machine execution of your groups to watch their progress through the iperf/mtr tests in the console.  Make sure that you are looking in the region that your Cloudformation was deployed in
+5. Once your iperf3/mtr tests have completed, you will find the results in the Cloudwatch Log Group named Iperf-Crawler. The results are identified by Log Streams labeled by group number
  	
