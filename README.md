@@ -56,24 +56,30 @@ Iperf Crawler will detect whether a state machine has failed or timed-out, and t
 </br>
 
 ### FAQs
-</br>
+
 #### Can I run tests between subnets in multiple groups simultaneously?
 Yes, you can tag as many subnets to groups as you want, and IC will deploy EC2s in those subnets as long as you are under your EC2 limits
 </br>
+
 #### Is cross-account supported?
 Not yet, but will soon be.
 </br>
+
 #### Can I tag subnets in multiple AWS regions?
 Yes, however the AWS State Machines and Cloudwatch results will all be located in the region that you deployed the IC Cloudformation stack in
 </br>
+
 #### Are there any known limitations with the iperf3 or mtr client commands that I can run?
 Not all variations of iperf3 and mtr tests have been tested, since there is a limitless combination of options you could use. That said, IC should be handle most commands that you run as long as they take no more than 55 seconds to complete. IC is particularly sensitive to long-running tests over this time.
 </br>
+
 #### Can I run both TCP and UDP iperf3 tests?
 Yes
 </br>
+
 #### Can I run parallel streams?
 Yes, you can specify -P such as iperf3 -P 30 -c in Cloudformation to run parallel streams.
 </br>
+
 #### Can I run multiple iperf3 client processes in a for loop?
 At the moment this is not supported
