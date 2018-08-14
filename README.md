@@ -11,10 +11,8 @@ Iperf Crawler (IC) is an iperf3 and mtr automation tool deployed through Cloudfo
 <br/>
 For example, you may want to compare throughput and latency between identical EC2 types in different Availability Zones to see if there is any significant difference between network paths in these AZs. Such as:<br/>
 <br/>
-us-west-2a <---> us-west-2b<br/>
-
-us-west-2a <---> us-west-2c<br/>
-
-us-west-2b <---> us-west-2c<br/>
+us-west-2a <---> us-west-2b
+us-west-2a <---> us-west-2c
+us-west-2b <---> us-west-2c
 <br/>
 Iperf Crawler can very quickly gather these iperf and mtr test results and export them to Cloudwatch a Log Group for further side-by-side analysis, or to build Cloudwatch metrics and alarms.<br/>
