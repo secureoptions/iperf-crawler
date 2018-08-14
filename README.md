@@ -42,7 +42,7 @@ There are several major benefits to using this tool:
 
 </br>
 
-### Known Limitations
+### Known Limitations ###
 
 - Iperf Crawler allows a user to select the instance type they would like to deploy for testing, but they should take note of the EC2 limits applied to their particular account. Exceeding these limits will cause IC to fail
 - You cannot tag a subnet to more than one group at a time.
