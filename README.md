@@ -47,3 +47,10 @@ There are several major benefits to using this tool:
 - Iperf Crawler allows a user to select the instance type they would like to deploy for testing, but they should take note of the EC2 limits applied to their particular account. Exceeding these limits will cause IC to fail
 - You cannot tag a subnet to more than one group at a time.
 - Tagging more than two subnets to a group may result in unexpected behavior
+
+</br>
+### Error Handling
+
+Iperf Crawler will detect whether a state machine has failed or timed-out, and then remove its group/resources accordingly. If a user specifies a invalid MTR or Iperf3 client command in Cloudformation, this can cause the state machine to fail. If this happens the worker EC2s will send errors rather than test results to their respective group log in Cloudwatch
+
+### FAQs
