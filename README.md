@@ -2,13 +2,23 @@
 
 ## Table of Contents
 - [Copyrights & Contributions](#copy)
+- [What is Iperf Crawler](#what)
+- [The benefits of using Iperf Crawler vs. manual setup](#benefits)
+- [Usage Instructions](#usage)
+- [Deployment workflow diagram](#workflow)
+- [Known Limitations](#limits)
+- [Error Handling](#errors)
+- [FAQs](#faqs)
+  + [question one](#questionone)
 
+<br/>
 <a name="copy"></a>
 ### Copyrights & Contributions
 This tool uses source code from the following contributors:<br/>
 iperf3 https://github.com/esnet/iperf<br/>
 mtr https://github.com/traviscross/mtr<br/>
 <br/>
+<a name="what"></a>
 ### What is Iperf Crawler
 Iperf Crawler (IC) is an iperf3 and mtr automation tool deployed through Cloudformation. It can greatly speed up the process of benchmarking or troubleshooting network throughput issues in an AWS environment. It's also a great tool for building quick side-by-side comparisons of different network paths in just a few minutes with no manual set up.<br/>
 <br/>
@@ -20,6 +30,7 @@ us-west-2b <---> us-west-2c<br/>
 <br/>
 Iperf Crawler can very quickly gather these iperf and mtr test results and export them to Cloudwatch a Log Group for further side-by-side analysis, or to build Cloudwatch metrics and alarms.<br/>
 <br/>
+<a name="benefits"></a>
 ### The benefits of using Iperf Crawler vs. manual setup
 
 There are several major benefits to using this tool:
@@ -28,6 +39,7 @@ There are several major benefits to using this tool:
 - Environment cleanup is automated once the iperf3 tests have finished so users can deploy the tool and forget about it. Cleanup terminates running EC2s, un-tags subnets that have completed testing, removes security group entries, etc
 - Results of iperf are sent to Cloudwatch for further programmatic handling by applications or to build Cloudwatch metrics and alarms
 <br/>
+<a name="usage"></a>
 ### Usage Instructions
 
 ![user experience](https://s3.amazonaws.com/secure-options/UserExperience.PNG)
@@ -39,13 +51,13 @@ There are several major benefits to using this tool:
 5. Once your iperf3/mtr tests have completed, you will find the results in the Cloudwatch Log Group named Iperf-Crawler. The results are identified by Log Streams labeled by group number
  	
 </br>
-
+<a name="workflow"></a>
 ### Deployment Workflow
 
 ![workflow](https://s3.amazonaws.com/secure-options/IperfCrawler.PNG)
 
 </br>
-
+<a name="limits"></a>
 ### Known Limitations ###
 
 - Iperf Crawler allows a user to select the instance type they would like to deploy for testing, but they should take note of the EC2 limits applied to their particular account. Exceeding these limits will cause IC to fail
@@ -53,15 +65,16 @@ There are several major benefits to using this tool:
 - Tagging more than two subnets to a group may result in unexpected behavior
 
 </br>
-
+<a name="errors"></a>
 ###  Error Handling
 
 Iperf Crawler will detect whether a state machine has failed or timed-out, and then remove its group/resources accordingly. If a user specifies a invalid MTR or Iperf3 client command in Cloudformation, this can cause the state machine to fail. If this happens the worker EC2s will send errors rather than test results to their respective group log in Cloudwatch
 
 </br>
-
+<a name="faqs"></a>
 ### FAQs
 
+<a name="questionone"></a>
 #### Can I run tests between subnets in multiple groups simultaneously?
 Yes, you can tag as many subnets to groups as you want, and IC will deploy EC2s in those subnets as long as you are under your EC2 limits
 </br>
