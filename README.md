@@ -40,3 +40,10 @@ There are several major benefits to using this tool:
 ### Deployment Workflow
 
 ![workflow](https://s3.amazonaws.com/secure-options/IperfCrawler.PNG)
+
+</br>
+### Known Limitations
+
+- Iperf Crawler allows a user to select the instance type they would like to deploy for testing, but they should take note of the EC2 limits applied to their particular account. Exceeding these limits will cause IC to fail
+- You cannot tag a subnet to more than one group at a time.
+- Tagging more than two subnets to a group may result in unexpected behavior
