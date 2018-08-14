@@ -24,8 +24,7 @@ There are several major benefits to using this tool:
 - Environment cleanup is automated once the iperf3 tests have finished so users can deploy the tool and forget about it. Cleanup terminates running EC2s, un-tags subnets that have completed testing, removes security group entries, etc
 - Results of iperf are sent to Cloudwatch for further programmatic handling by applications or to build Cloudwatch metrics and alarms
 <br/>
-### Usage Instructions 
-<br/>
+
 ![alt text](https://s3.amazonaws.com/secure-options/UserExperience.PNG)
 
  	
