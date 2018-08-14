@@ -21,5 +21,5 @@ Iperf Crawler can very quickly gather these iperf and mtr test results and expor
 There are several major benefits to using this tool:
 - Environment prep is automated (necessary security group entries, gathering iperf3 server/client metadata)
 - The live status of the iperf3 tests can monitored easily in one place through AWS Step Functions to ensure tests are successful ( more info on that service here https://aws.amazon.com/step-functions/ )
-    Environment cleanup is automated once the iperf3 tests have finished so users can deploy the tool and forget about it. Cleanup terminates running EC2s, un-tags subnets that have completed testing, removes security group entries, etc
-    Results of iperf are sent to Cloudwatch for further programmatic handling by applications or to build Cloudwatch metrics and alarms
+- Environment cleanup is automated once the iperf3 tests have finished so users can deploy the tool and forget about it. Cleanup terminates running EC2s, un-tags subnets that have completed testing, removes security group entries, etc
+- Results of iperf are sent to Cloudwatch for further programmatic handling by applications or to build Cloudwatch metrics and alarms
