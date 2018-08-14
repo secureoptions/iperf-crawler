@@ -25,6 +25,7 @@ There are several major benefits to using this tool:
 - Results of iperf are sent to Cloudwatch for further programmatic handling by applications or to build Cloudwatch metrics and alarms
 <br/>
 ### Usage Instructions
-[![User Experience](https://s3.amazonaws.com/secure-options/UserExperience.PNG)]
+
+![alt text](https://s3.amazonaws.com/secure-options/UserExperience.PNG)
 
  	
