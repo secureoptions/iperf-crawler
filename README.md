@@ -21,7 +21,7 @@ mtr https://github.com/traviscross/mtr<br/>
 <a name="what"></a>
 
 ### What is Iperf Crawler
-Iperf Crawler (IC) is an iperf3 and mtr automation tool deployed through Cloudformation. It can greatly speed up the process of benchmarking or troubleshooting network throughput issues in an AWS environment. It's also a great tool for building quick side-by-side comparisons of different network paths in just a few minutes with no manual set up.<br/>
+Iperf Crawler (IC) is an iperf3 and mtr automation tool deployed through Cloudformation. It will launch iperf3 client/server EC2s in any two subnets that you specify, and automate the tests between these subnets. It can greatly speed up the process of benchmarking or troubleshooting network throughput issues in an AWS environment. It's also a great tool for building quick side-by-side comparisons of different network paths in just a few minutes with no manual set up.<br/>
 <br/>
 For example, you may want to compare throughput and latency between identical EC2 types in different Availability Zones to see if there is any significant difference between network paths in these AZs. Such as:<br/>
 <br/>
