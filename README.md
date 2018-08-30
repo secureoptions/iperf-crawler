@@ -18,7 +18,6 @@ This tool uses source code from the following authors:<br/>
 iperf3 https://github.com/esnet/iperf<br/>
 mtr https://github.com/traviscross/mtr<br/>
 <br/>
-As with this and all the projects I've developed, it's my great honor and privilege to give credit first to my Lord and Savior, Jesus Christ, who gives me the inspiration, ability, and skills to build. Secondly, I want to acknowledge my lovely wife, Sarah, who is always supportive of me.
 <a name="what"></a>
 
 ### What is Iperf Crawler
