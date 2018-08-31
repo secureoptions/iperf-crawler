@@ -1,17 +1,45 @@
 import boto3
 from vars import B_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, MTR_FLAGS, SUBNETS, REGION, EC2_REGION, GROUP
 import json
-from subprocess import Popen, PIPE, STDOUT
+from import Popen, PIPE, STDOUT
 import urllib2
 import botocore
 import datetime
 import time
 
-# set needed boto3 clients
+# determine if this worker was launched from another parent account. If so, assume necessary role from parent account.
+if PARENT_ACCOUNT == '':
+	stepfunctions = boto3.client('stepfunctions', region_name = REGION)
+	logs = boto3.client('logs', region_name = REGION)
+	sdb = boto3.client('sdb', region_name = REGION)
+else:
+	assume_role = sts.assume_role(
+		RoleArn='arn:aws:iam::%s:role/IperfWorker' % PARENT_ACCOUNT,
+		RoleSessionName='iperf_worker'
+		)
+	
+	stepfunctions = boto3.client('stepfunctions',
+					aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
+					aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
+					aws_session_token=assume_role['Credentials']['SessionToken'],	
+					region_name = REGION
+					)
+	logs = boto3.client('logs',
+					aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
+					aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
+					aws_session_token=assume_role['Credentials']['SessionToken'],	
+					region_name = REGION
+					)
+	sdb = boto3.client('sdb',
+					aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
+					aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
+					aws_session_token=assume_role['Credentials']['SessionToken'],	
+					region_name = REGION
+					)
+
+
 ec2 = boto3.client('ec2', region_name = EC2_REGION)
-stepfunctions = boto3.client('stepfunctions', region_name = REGION)
-logs = boto3.client('logs', region_name = REGION)
-sdb = boto3.client('sdb', region_name = REGION)
+
 
 LOCAL_PUBLIC_IP = urllib2.urlopen('http://169.254.169.254/latest/meta-data/public-ipv4').read()
 LOCAL_PRIVATE_IP = urllib2.urlopen('http://169.254.169.254/latest/meta-data/local-ipv4').read()
