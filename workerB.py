@@ -7,35 +7,29 @@ import botocore
 import datetime
 import time
 
-# determine if this worker was launched from another parent account. If so, assume necessary role from parent account.
-if PARENT_ACCOUNT == '':
-	stepfunctions = boto3.client('stepfunctions', region_name = REGION)
-	logs = boto3.client('logs', region_name = REGION)
-	sdb = boto3.client('sdb', region_name = REGION)
-else:
-	assume_role = sts.assume_role(
-		RoleArn='arn:aws:iam::%s:role/IperfCrawler-Ec2Role-12E656INJQ79K' % PARENT_ACCOUNT,
-		RoleSessionName='iperf_worker'
-		)
-	
-	stepfunctions = boto3.client('stepfunctions',
-					aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
-					aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
-					aws_session_token=assume_role['Credentials']['SessionToken'],	
-					region_name = REGION
-					)
-	logs = boto3.client('logs',
-					aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
-					aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
-					aws_session_token=assume_role['Credentials']['SessionToken'],	
-					region_name = REGION
-					)
-	sdb = boto3.client('sdb',
-					aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
-					aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
-					aws_session_token=assume_role['Credentials']['SessionToken'],	
-					region_name = REGION
-					)
+assume_role = sts.assume_role(
+	RoleArn='arn:aws:iam::%s:role/IperfWorker' % PARENT_ACCOUNT,
+	RoleSessionName='iperf_worker'
+	)
+
+stepfunctions = boto3.client('stepfunctions',
+				aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
+				aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
+				aws_session_token=assume_role['Credentials']['SessionToken'],	
+				region_name = REGION
+				)
+logs = boto3.client('logs',
+				aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
+				aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
+				aws_session_token=assume_role['Credentials']['SessionToken'],	
+				region_name = REGION
+				)
+sdb = boto3.client('sdb',
+				aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
+				aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
+				aws_session_token=assume_role['Credentials']['SessionToken'],	
+				region_name = REGION
+				)
 
 
 ec2 = boto3.client('ec2', region_name = EC2_REGION)
