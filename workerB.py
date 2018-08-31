@@ -14,7 +14,7 @@ if PARENT_ACCOUNT == '':
 	sdb = boto3.client('sdb', region_name = REGION)
 else:
 	assume_role = sts.assume_role(
-		RoleArn='arn:aws:iam::%s:role/IperfWorker' % PARENT_ACCOUNT,
+		RoleArn='arn:aws:iam::%s:role/IperfCrawler-Ec2Role-12E656INJQ79K' % PARENT_ACCOUNT,
 		RoleSessionName='iperf_worker'
 		)
 	
