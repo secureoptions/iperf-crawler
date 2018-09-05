@@ -179,10 +179,7 @@ except Exception as e:
 		
 
 # Now start the iperf3 server on this machine, and update state so that side B knows it can start the iperf3 client
-count = 1
-while count <= 99:
-	Popen(["iperf3","-s","-p","520"+ str(count),"&"])
-	count += 1
+Popen(["iperf3","-s","-p","5201","&"])
 
 stepfunctions.send_task_success(
     taskToken=TASK_TOKEN,
