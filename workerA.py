@@ -11,7 +11,7 @@ import re
 sts = boto3.client('sts')
 
 assume_role = sts.assume_role(
-	RoleArn='arn:aws:iam::%s:role/IperfCrawlerEc2-Primary' % PARENT_ACCOUNT,
+	RoleArn='arn:aws:iam::%s:role/IperfCrawlerEc2' % PARENT_ACCOUNT,
 	RoleSessionName='iperf_worker'
 	)
 
@@ -39,7 +39,7 @@ SECONDARY_ACCOUNT = SECONDARY_ACCOUNT['Account']
 
 if PARENT_ACCOUNT != SECONDARY_ACCOUNT:
 	assume_role = sts.assume_role(
-	RoleArn='arn:aws:iam::%s:role/IperfCrawlerEc2-Secondary' % SECONDARY_ACCOUNT,
+	RoleArn='arn:aws:iam::%s:role/IperfCrawlerEc2' % SECONDARY_ACCOUNT,
 	RoleSessionName='iperf_worker2'
 	)
 				
