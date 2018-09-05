@@ -201,13 +201,7 @@ try:
 	update_results(p,CMD,'IPERF')
 	
 	# start the iperf3 server on 'B' now since it has finished running client tests
-	count = 1
-	while count <= 99:
-		if count < 10:
-			Popen(["iperf3","-s","-p","520"+ str(count),"&"])
-		else:
-			Popen(["iperf3","-s","-p","52"+ str(count),"&"])
-		count += 1
+	Popen(["iperf3","-s","-p","5201","&"])
 
     # finally update the state machine so that side A can run as client
 	stepfunctions.send_task_success(
