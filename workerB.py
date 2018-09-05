@@ -1,14 +1,17 @@
 import boto3
-from vars import B_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, MTR_FLAGS, SUBNETS, REGION, EC2_REGION, GROUP
+from vars import B_ACTIVITY_ARN, SG_ID, IPERF_FLAGS, MTR_FLAGS, SUBNETS, REGION, EC2_REGION, GROUP, PARENT_ACCOUNT
 import json
-from import Popen, PIPE, STDOUT
+from subprocess import Popen, PIPE, STDOUT
 import urllib2
 import botocore
 import datetime
 import time
 
+# set up clients with appropriate credentials to make calls across accounts
+sts = boto3.client('sts')
+
 assume_role = sts.assume_role(
-	RoleArn='arn:aws:iam::%s:role/IperfWorker' % PARENT_ACCOUNT,
+	RoleArn='arn:aws:iam::%s:role/IperfCrawler-Ec2Role-12E656INJQ79K' % PARENT_ACCOUNT,
 	RoleSessionName='iperf_worker'
 	)
 
@@ -29,11 +32,23 @@ sdb = boto3.client('sdb',
 				aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
 				aws_session_token=assume_role['Credentials']['SessionToken'],	
 				region_name = REGION
+				)			
+
+SECONDARY_ACCOUNT = sts.get_caller_identity()
+SECONDARY_ACCOUNT = SECONDARY_ACCOUNT['Account']
+
+if PARENT_ACCOUNT != SECONDARY_ACCOUNT:
+	assume_role = sts.assume_role(
+	RoleArn='arn:aws:iam::%s:role/IperfCrawlerEc2-Secondary' % SECONDARY_ACCOUNT,
+	RoleSessionName='iperf_worker2'
+	)
+				
+ec2 = boto3.client('ec2', 
+				aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
+				aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
+				aws_session_token=assume_role['Credentials']['SessionToken'],
+				region_name = EC2_REGION
 				)
-
-
-ec2 = boto3.client('ec2', region_name = EC2_REGION)
-
 
 LOCAL_PUBLIC_IP = urllib2.urlopen('http://169.254.169.254/latest/meta-data/public-ipv4').read()
 LOCAL_PRIVATE_IP = urllib2.urlopen('http://169.254.169.254/latest/meta-data/local-ipv4').read()
