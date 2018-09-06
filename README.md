@@ -5,6 +5,7 @@
 - [What is Iperf Crawler](#what)
 - [The benefits of using Iperf Crawler vs. manual setup](#benefits)
 - [Usage Instructions](#usage)
+-- [Steps for the Main Account](#primary)
 - [Deployment workflow diagram](#workflow)
 - [Known Limitations](#limits)
 - [Error Handling](#errors)
@@ -48,6 +49,11 @@ There are several major benefits to using this tool:
 
 ![user experience](https://s3.amazonaws.com/secure-options/UserExperience.PNG)
 
+<br/>
+<a name="primary"></a>
+#### For the Main AWS Account 
+The main AWS account will manage all the state machines and hold the final iperf3 results of all tests in its Cloudwatch logs, regardless of which other AWS accounts the tests were ran in. Below are the steps to deploy Iperf Crawler in the main account.
+<br/>
 1. Launch Cloudformation stack <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/primary_account.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
 2. Specify optional, client-side mtr and iperf3 flags in the Cloudformation parameters.
 3. Tag any two subnets to a group with a Key of iperf and value of groupN where N is a number. Key and Value are lowercase-sensitive. If any characters are uppercase, the tagged subnet will be ignored . If subnets are in a different AWS account follow the steps further below for cross-account support)
