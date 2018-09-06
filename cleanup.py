@@ -11,6 +11,7 @@ def lambda_handler(event, context):
 		events = boto3.client('events')
 		sdb = boto3.client('sdb')
 		stepfunctions = boto3.client('stepfunctions')
+		sts = boto3.client('sts')
 		
 		if event['RequestType'] == 'Delete':
 			# Disable 1 minute CW rule that triggers the lambda crawler`
@@ -34,6 +35,23 @@ def lambda_handler(event, context):
 					time.sleep(5)
 				else:
 					break
+					
+			def set_creds(x,y):
+				if x[y]['Account'] == 'parent':
+					ec2 = boto3.client('ec2', region_name = x[y]['Region'])
+				else:
+					assume_role = sts.assume_role(
+						RoleArn='arn:aws:iam::%s:role/IperfCrawlerLambdaRole' % x[y]['Account'],
+						RoleSessionName='deploy_iperf_worker'
+						)
+					ec2 = boto3.client('ec2', 
+							aws_access_key_id=assume_role['Credentials']['AccessKeyId'],
+							aws_secret_access_key=assume_role['Credentials']['SecretAccessKey'],
+							aws_session_token=assume_role['Credentials']['SessionToken'],	
+							region_name = x[y]['Region']
+							)
+				return ec2	
+			
 			try:
 				# Get all items in DB and delete their resources
 				get_group_subs = sdb.select(
@@ -63,7 +81,7 @@ def lambda_handler(event, context):
 					)
 				# Delete all EC2s currently running
 				try:
-					ec2 = boto3.client('ec2', region_name = items_to_delete[item]['Region'])
+					ec2 = set_creds(items_to_delete,item)
 					ec2.terminate_instances(
 						InstanceIds=[items_to_delete[item]['InstanceId']]
 						)
@@ -73,7 +91,7 @@ def lambda_handler(event, context):
 			for item in items_to_delete:
 				try:
 					# wait for the instance to fully terminate before deleting its security group
-					ec2 = boto3.client('ec2', region_name = items_to_delete[item]['Region'])
+					ec2 = set_creds(items_to_delete,item)
 					
 					while True:
 						status = ec2.describe_instances(
@@ -116,12 +134,9 @@ def lambda_handler(event, context):
 						activityArn=items_to_delete[item]['ActivityArn']
 							)
 					
-					# Stop any potentially hung execution
-					stepfunctions.stop_execution(
-						executionArn=items_to_delete[item]['ExecutionArn']
-					)
 				except:
 					continue
+					
 				
 				try:
 					# Remove statemachine if it still exists
@@ -129,14 +144,25 @@ def lambda_handler(event, context):
 							stateMachineArn=items_to_delete[item]['StateArn']
 						)
 				except:
-					continue
-
+					try:
+						# Stop any potentially hung execution
+						response = stepfunctions.stop_execution(
+							executionArn=items_to_delete[item]['ExecutionArn']
+						)
+						
+						# Remove statemachine if it still exists
+						stepfunctions.delete_state_machine(
+								stateMachineArn=items_to_delete[item]['StateArn']
+							)
+						
+					except:
+						continue
 							
-			# Finally delete the SDB itself
-			sdb.delete_domain(
-				DomainName='iperf-crawler',
-			)
-	
+		# Finally delete the SDB itself
+		sdb.delete_domain(
+			DomainName='iperf-crawler',
+		)
+
 			
 		sendResponseCfn(event, context, "SUCCESS")
 	except Exception as e:
