@@ -5,7 +5,7 @@
 - [What is Iperf Crawler](#what)
 - [The benefits of using Iperf Crawler vs. manual setup](#benefits)
 - [Usage Instructions](#usage)
--- [Steps for the Main Account](#primary)
+  + [Steps for the Main Account](#primary)
 - [Deployment workflow diagram](#workflow)
 - [Known Limitations](#limits)
 - [Error Handling](#errors)
