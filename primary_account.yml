@@ -105,6 +105,12 @@ Parameters:
     Type: String
     Default: iperf3 -c
     AllowedPattern: iperf3.*
+  Accounts:
+    Description: (Optional) Specify a comma-separated list of one or more AWS account ids that you wish to run iperf3 worker EC2(s) in. You DO NOT have to include this AWS account id in the list. If you do not have any additional accounts, leave the default value of '000000000000'
+    Type: String
+    Default: '000000000000'
+    AllowedPattern: '([0-9]{12}\s?,?\s?)*'
+    ConstraintDescription: You must provide at least one additional account number in the form of xxxxxxxxxxxx, or specify 000000000000 if you do not have any additional accounts
 
 Resources: 
     LambdaIamPolicy:
@@ -142,6 +148,8 @@ Resources:
                   - "states:DescribeExecution"
                   - "states:StopExecution"
                   - "iam:PassRole"
+                  - "sts:AssumeRole"
+                  - "sts:GetCallerIdentity"
                 Effect: Allow
                 Resource: "*"
             Version: "2012-10-17"
@@ -167,7 +175,7 @@ Resources:
               - sdb:GetAttributes
               - sdb:PutAttributes
               Resource: "*"
-          PolicyName: IperfCrawlerEc2Permissions
+          PolicyName: IperfCrawlerEc2
           Roles:
           - Ref: Ec2Role
     LambdaRole:
@@ -190,14 +198,17 @@ Resources:
             - Effect: Allow
               Principal:
                 Service: ec2.amazonaws.com
+                AWS: "*"
               Action: sts:AssumeRole
           Path: "/"
+          RoleName: IperfCrawlerEc2
     Ec2InstanceProfile:
         Type: AWS::IAM::InstanceProfile
         Properties:
           Path: "/"
           Roles:
           - Ref: Ec2Role
+          InstanceProfileName: IperfCrawlerEc2
          
     IperfCrawlerLambda:
         Type: AWS::Lambda::Function
@@ -222,10 +233,14 @@ Resources:
                 Ref: MtrCommand
               REGION:
                 Ref: AWS::Region
+              TYPE:
+                Ref: Type
               STATES_EXECUTION_ROLE:
                 Fn::GetAtt:
                 - StatesExecutionRole
                 - Arn
+              ACCOUNTS:
+                Ref: Accounts
           FunctionName: IperfCrawler
           Handler: iperf-crawler.lambda_handler
           Role: 
