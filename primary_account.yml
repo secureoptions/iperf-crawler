@@ -248,7 +248,7 @@ Resources:
             - LambdaRole
             - Arn
           Runtime: python2.7
-          Timeout: 180        
+          Timeout: 600       
     LambdaRule:
       Type: AWS::Events::Rule
       Properties:
@@ -328,4 +328,4 @@ Resources:
             - LambdaRole
             - Arn
           Runtime: python2.7
-          Timeout: 180
+          Timeout: 600
