@@ -5,8 +5,8 @@
 - [What is Iperf Crawler](#what)
 - [The benefits of using Iperf Crawler vs. manual setup](#benefits)
 - [Usage Instructions](#usage)
-  + [Deployment Steps for the Main AWS Account](#primary)
-  + [Deployment Steps for any Secondary AWS Account](#secondary)
+  + [Deployment Steps for the main AWS account](#primary)
+  + [Deployment Steps for secondary AWS accounts](#secondary)
 - [Deployment workflow diagram](#workflow)
 - [Known Limitations](#limits)
 - [Error Handling](#errors)
@@ -53,7 +53,7 @@ There are several major benefits to using this tool:
 <br/>
 <a name="primary"></a>
 
-#### Deployment Steps for the Main AWS Account 
+#### Deployment Steps for the main AWS account 
 
 The main AWS account will manage all the state machines and hold the final iperf3 results of all tests in its Cloudwatch logs, regardless of which other AWS accounts the tests were ran in. Below are the steps to deploy Iperf Crawler in the main account.
 <br/>
@@ -67,7 +67,7 @@ The main AWS account will manage all the state machines and hold the final iperf
 <br/>
 <a name="secondary"></a>
 
-#### Deployment Steps for any Secondary AWS Account
+#### Deployment Steps for secondary AWS accounts
 
 The following steps must be taken in order for Iperf Crawler in the main AWS account to access resources in the secondary AWS account.
 1. Launch the Secondary Account Cloudformation stack
