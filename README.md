@@ -48,7 +48,7 @@ There are several major benefits to using this tool:
 
 ![user experience](https://s3.amazonaws.com/secure-options/UserExperience.PNG)
 
-1. Launch Cloudformation stack <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/iperf_crawler.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
+1. Launch Cloudformation stack <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/primary_account.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
 2. Specify optional, client-side mtr and iperf3 flags in the Cloudformation parameters.
 3. Tag any two subnets to a group with a Key of iperf and value of groupN where N is a number. Key and Value are lowercase-sensitive. If any characters are uppercase, the tagged subnet will be ignored . If subnets are in a different AWS account follow the steps further below for cross-account support)
 4. Monitor the AWS State Machine execution of your groups to watch their progress through the iperf/mtr tests in the console.  Make sure that you are looking in the region that your Cloudformation was deployed in
