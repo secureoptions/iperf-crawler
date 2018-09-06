@@ -5,7 +5,7 @@
 - [What is Iperf Crawler](#what)
 - [The benefits of using Iperf Crawler vs. manual setup](#benefits)
 - [Usage Instructions](#usage)
-  + [Steps for the Main Account](#primary)
+  + [Deployment Steps for the Main AWS Account](#primary)
 - [Deployment workflow diagram](#workflow)
 - [Known Limitations](#limits)
 - [Error Handling](#errors)
@@ -51,7 +51,8 @@ There are several major benefits to using this tool:
 
 <br/>
 <a name="primary"></a>
-#### For the Main AWS Account 
+
+#### Deployment Steps for the Main AWS Account 
 
 The main AWS account will manage all the state machines and hold the final iperf3 results of all tests in its Cloudwatch logs, regardless of which other AWS accounts the tests were ran in. Below are the steps to deploy Iperf Crawler in the main account.
 <br/>
