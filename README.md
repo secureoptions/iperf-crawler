@@ -70,7 +70,7 @@ The main AWS account will manage all the state machines and hold the final iperf
 #### Deployment Steps for secondary AWS accounts
 
 The following steps must be taken in order for Iperf Crawler in the main AWS account to access resources in the secondary AWS account.
-1. Launch the Secondary Account Cloudformation stack
+1. Launch the Secondary Account Cloudformation stack <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/secondary_account.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
 2. Tag any subnet to a group with a Key of **iperf** and a Value of **groupN** where **N** is the group number. Key and Value are lowercase-sensitive. If any characters are uppercase, the tagged subnet will be ignored
  	
 </br>
