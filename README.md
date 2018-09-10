@@ -83,8 +83,8 @@ The following steps must be taken in order for Iperf Crawler in the main AWS acc
 
 The Cloudformation stacks can only be deployed in the following regions:
 <br/>
-<p align="center">
-  <img width="200" height="200" src="https://s3.amazonaws.com/secure-options/SupportedRegions.png">
+<p align="left">
+  <img width="400" height="400" src="https://s3.amazonaws.com/secure-options/SupportedRegions.png">
 </p>
 <br/>
 ..*__HOWEVER__*, you can tag subnets in *__any__* commercial AWS region. All iperf3 and MTR results can be seen in the Cloudwatch logs in AWS region which you deployed the Cloudformation template.
