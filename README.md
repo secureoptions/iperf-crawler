@@ -7,6 +7,7 @@
 - [Usage Instructions](#usage)
   + [Deployment Steps for the main AWS account](#primary)
   + [Deployment Steps for secondary AWS accounts](#secondary)
+- [Supported AWS Regions](#supported)
 - [Deployment workflow diagram](#workflow)
 - [Known Limitations](#limits)
 - [Error Handling](#errors)
@@ -16,6 +17,7 @@
 <a name="copy"></a>
 
 ### Copyrights & Contributions
+
 This tool uses source code from the following authors:<br/>
 iperf3 https://github.com/esnet/iperf<br/>
 mtr https://github.com/traviscross/mtr<br/>
@@ -23,6 +25,7 @@ mtr https://github.com/traviscross/mtr<br/>
 <a name="what"></a>
 
 ### What is Iperf Crawler
+
 Iperf Crawler (IC) is an iperf3 and mtr automation tool deployed through Cloudformation. It will launch iperf3 client/server EC2s in any two subnets that you specify, and automate the tests between these subnets. It can greatly speed up the process of benchmarking or troubleshooting network throughput issues in an AWS environment. It's also a great tool for building quick side-by-side comparisons of different network paths in just a few minutes with no manual set up.<br/>
 <br/>
 For example, you may want to compare throughput and latency between identical EC2 types in different Availability Zones to see if there is any significant difference between network paths in these AZs. Such as:<br/>
@@ -73,6 +76,16 @@ The following steps must be taken in order for Iperf Crawler in the main AWS acc
 1. Launch the Secondary Account Cloudformation stack <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/secondary_account.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
 2. Tag any subnet to a group with a Key of **iperf** and a Value of **groupN** where **N** is the group number. Key and Value are lowercase-sensitive. If any characters are uppercase, the tagged subnet will be ignored
  	
+</br>
+<a name="supported"></a>
+
+### Supported Regions
+
+The Cloudformation stacks can only be deployed in the following regions:
+![iperf3 supported regions](https://s3.amazonaws.com/secure-options/SupportedRegions.png)
+<br/>
+..*__HOWEVER__*, you can tag subnets in *__any__* commercial AWS region. All iperf3 and MTR results can be seen in the Cloudwatch logs in AWS region which you deployed the Cloudformation template.
+
 </br>
 <a name="workflow"></a>
 
