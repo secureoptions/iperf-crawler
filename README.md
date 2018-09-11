@@ -4,6 +4,7 @@
 - [Copyrights & Contributions](#copy)
 - [What is Iperf Crawler](#what)
 - [The benefits of using Iperf Crawler vs. manual setup](#benefits)
+- [Pre-Deployment Requirements](#requirements)
 - [Usage Instructions](#usage)
   + [Deployment Steps for the main AWS account](#primary)
   + [Deployment Steps for secondary AWS accounts](#secondary)
@@ -11,6 +12,7 @@
 - [Deployment workflow diagram](#workflow)
 - [Known Limitations](#limits)
 - [Error Handling](#errors)
+- [Limits](#limits)
 - [FAQs](#faqs)
 
 <br/>
@@ -46,6 +48,15 @@ There are several major benefits to using this tool:
 - Environment cleanup is automated once the iperf3 tests have finished so users can deploy the tool and forget about it. Cleanup terminates running EC2s, un-tags subnets that have completed testing, removes security group entries, etc
 - Results of iperf are sent to Cloudwatch for further programmatic handling by applications or to build Cloudwatch metrics and alarms
 - Can run tests between _multiple_ subnets simultaneously. For example you may want to run tests between 20 pairs of subnets at once. This tool is capable of doing this.
+
+<br/>
+<a name="requirements"></a>
+
+### Pre-Deployment Requirements
+
+- The AWS Network ACLs associated with tagged subnets must be open to all inbound & outbound traffic (Iperf Crawler will automatically create the necessary security groups and entries to allow tests between subnets)
+- There must be *either* a public or private network available between the two subnets
+
 <br/>
 <a name="usage"></a>
 
@@ -113,6 +124,10 @@ The Cloudformation stacks can only be deployed in the following regions:
 ###  Error Handling
 
 Iperf Crawler will detect whether a state machine has failed or timed-out, and then remove its group/resources accordingly. If a user specifies a invalid MTR or Iperf3 client command in Cloudformation, this can cause the state machine to fail. If this happens the worker EC2s will send errors rather than test results to their respective group log in Cloudwatch
+
+### Limits
+
+Iperf Crawler itself does not have many inherent limitations, however, you should be mindful of your AWS account's EC2 limits. For example if you intend to run a bunch of Iperf Crawler between M4.4xlarge EC2s, you will want to check your current limit first. Iperf Crawler will not throw an error if it hits some limits
 
 </br>
 <a name="faqs"></a>
