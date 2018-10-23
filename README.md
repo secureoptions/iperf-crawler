@@ -18,7 +18,7 @@
 <a name="video"></a>
 
 ### Iperf Crawler Demo Video
-<a href="https://youtu.be/FRVs_ary5rA><img source="https://s3.amazonaws.com/secure-options/youtube.jpeg"/></a>                                                                                                                                                                                                  
+<a href="https://youtu.be/FRVs_ary5rA><img src="https://s3.amazonaws.com/secure-options/youtube.jpeg"/></a>                                                                                                                                                                                                  
 <br/>
 <a name="copy"></a>
 
