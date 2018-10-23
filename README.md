@@ -7,7 +7,6 @@
 - [Pre-Deployment Requirements](#requirements)
 - [Usage Instructions](#usage)
   + [Deployment Steps for the main AWS account](#primary)
-  + [Deployment Steps for secondary AWS accounts](#secondary)
 - [Supported AWS Regions](#supported)
 - [Deployment workflow diagram](#workflow)
 - [Known Limitations](#limits)
@@ -73,7 +72,7 @@ The main AWS account will manage all the state machines and hold the final iperf
 <br/>
 1. Launch the Primary Account Cloudformation stack <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/primary_account.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
 2. Specify optional, client-side mtr and iperf3 flags in the Cloudformation parameters.
-3. If you have any additional, secondary AWS accounts that you want to run Iperf3 tests from, specify a comma separated list of these accounts in the *Secondary AWS Accounts* field. If you do not have any other accounts, leave the field at its default value of '000000000000'
+3. (Note: Cross-Account is not yet supported) If you have any additional, secondary AWS accounts that you want to run Iperf3 tests from, specify a comma separated list of these accounts in the *Secondary AWS Accounts* field. If you do not have any other accounts, leave the field at its default value of '000000000000'
 4. Tag any two subnets to a group with a Key of **iperf** and value of **groupN** where **N** is a number. Key and Value are lowercase-sensitive. If any characters are uppercase, the tagged subnet will be ignored . If subnets are in a different AWS account follow the steps further below for cross-account support)
 5. Monitor the AWS State Machine execution of your groups to watch their progress through the iperf/mtr tests in the console.  Make sure that you are looking in the region that your Cloudformation was deployed in
 6. Once your iperf3/mtr tests have completed, you will find the results in the Cloudwatch Log Group named Iperf-Crawler. The results are identified by Log Streams labeled by group number
