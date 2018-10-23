@@ -78,15 +78,6 @@ The main AWS account will manage all the state machines and hold the final iperf
 5. Monitor the AWS State Machine execution of your groups to watch their progress through the iperf/mtr tests in the console.  Make sure that you are looking in the region that your Cloudformation was deployed in
 6. Once your iperf3/mtr tests have completed, you will find the results in the Cloudwatch Log Group named Iperf-Crawler. The results are identified by Log Streams labeled by group number
 
-<br/>
-<a name="secondary"></a>
-
-#### Deployment Steps for secondary AWS accounts
-
-The following steps must be taken in order for Iperf Crawler in the main AWS account to access resources in the secondary AWS account.
-1. Launch the Secondary Account Cloudformation stack <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=IperfCrawler&templateURL=https://s3.amazonaws.com/secure-options/secondary_account.yml"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></a>
-2. Tag any subnet to a group with a Key of **iperf** and a Value of **groupN** where **N** is the group number. Key and Value are lowercase-sensitive. If any characters are uppercase, the tagged subnet will be ignored
- 	
 </br>
 <a name="supported"></a>
 
