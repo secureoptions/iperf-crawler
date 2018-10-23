@@ -19,7 +19,7 @@
 
 ### Iperf Crawler Demo Video
 <a href="https://youtu.be/FRVs_ary5rA" alt="Iperf Crawler Demo Video" width="128" height="128"><img src="https://s3.amazonaws.com/secure-options/youtube.jpeg"></a><br/>
-#### Jump to video topics:<br/>
+__Jump to video topics:__<br/>
 <a href="https://youtu.be/FRVs_ary5rA?t=54">Features of Iperf Crawler</a><br/>
 <a href="https://youtu.be/FRVs_ary5rA?t=168">A High-Level Overview of the Tool</a><br/>
 <a href="https://youtu.be/FRVs_ary5rA?t=407">Deploying Iperf Crawler Cloudformation Stack</a><br/>
